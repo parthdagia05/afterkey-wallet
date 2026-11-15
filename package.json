@@ -8,19 +8,29 @@
     "register-pqc": "npx tsx src/scripts/register-pqc.ts",
     "drill-tx": "npx tsx src/scripts/drill-tx.ts",
     "check-balance": "npx tsx src/scripts/check-balance.ts",
+    "wallet": "npx tsx src/cli.ts",
     "build": "tsc"
   },
-  "keywords": ["post-quantum", "qorechain", "ai-wallet", "ml-dsa-87"],
+  "keywords": [
+    "post-quantum",
+    "qorechain",
+    "ai-wallet",
+    "ml-dsa-87"
+  ],
   "author": "",
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
     "@cosmjs/stargate": "^0.39.0",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
     "@qorechain/evm": "^0.14.0",
     "@qorechain/pqc": "^0.2.3",
     "@qorechain/sdk": "^0.14.0",
     "@types/node": "^26.6.6",
     "dotenv": "^18.0.10",
+    "ethers": "^6.17.0",
+    "hardhat": "^2.29.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }

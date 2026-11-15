@@ -4,3 +4,7 @@ dist/
 .secrets/
 *.key
 *.secret
+artifacts/
+cache/
+typechain-types/
+reasoning-log.txt

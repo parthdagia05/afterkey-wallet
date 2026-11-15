@@ -24,7 +24,8 @@ async function main() {
   const balances = await getBalance(keys.address);
   console.log("Balances:", JSON.stringify(balances, null, 2));
 
-  const uqorBalance = (balances as any[]).find(
+  const balanceList = (balances as any).balances ?? balances;
+  const uqorBalance = balanceList.find(
     (b: any) => b.denom === "uqor"
   );
   const qorAmount = uqorBalance
