@@ -24,8 +24,10 @@ npm install
 create a `.env` file:
 ```
 MAIN_MNEMONIC=your twelve words here
-ANTHROPIC_API_KEY=your-api-key
+GROQ_API_KEY=your-groq-key
 ```
+
+get a free groq api key at console.groq.com
 
 ## usage
 
@@ -64,7 +66,7 @@ contracts/       pq-gated vault (solidity)
 
 - qorechain typescript sdk
 - qorechain-pqc for hybrid ml-dsa-87 signing
-- claude haiku 5.5 for natural language intent parsing
+- llama 3.3 70b on groq for natural language intent parsing (free)
 - policy engine for transaction safety rules
 
 ## license

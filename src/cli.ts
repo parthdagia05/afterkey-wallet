@@ -15,8 +15,8 @@ async function main() {
     process.exit(1);
   }
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("Set ANTHROPIC_API_KEY in .env");
+  if (!process.env.GROQ_API_KEY) {
+    console.error("Set GROQ_API_KEY in .env (free at console.groq.com)");
     process.exit(1);
   }
 

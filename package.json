@@ -21,7 +21,6 @@
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
-    "@anthropic-ai/sdk": "^1.8.0",
     "@cosmjs/stargate": "^0.39.0",
     "@nomicfoundation/hardhat-toolbox": "^6.1.2",
     "@qorechain/evm": "^0.14.0",
@@ -31,6 +30,7 @@
     "dotenv": "^18.0.10",
     "ethers": "^6.17.0",
     "hardhat": "^2.29.2",
+    "openai": "^7.57.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }

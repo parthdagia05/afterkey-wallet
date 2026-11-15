@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { PolicyEngine, type TransactionIntent } from "../policy/engine.js";
 import { sendQor, getBalance } from "../signing/client.js";
 import { deriveFromMnemonic, type WalletKeys } from "../keys/generate.js";
@@ -30,13 +30,16 @@ Rules:
 - Never make up addresses.`;
 
 export class WalletAgent {
-  private client: Anthropic;
+  private client: OpenAI;
   private policy: PolicyEngine;
   private keys: WalletKeys | null = null;
   private reasoningLog: AgentDecision[] = [];
 
   constructor(policy?: PolicyEngine) {
-    this.client = new Anthropic();
+    this.client = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: "https://api.groq.com/openai/v1",
+    });
     this.policy = policy ?? new PolicyEngine();
   }
 
@@ -55,17 +58,24 @@ export class WalletAgent {
 
     decision.policyLog.push(`[input] User said: "${userInput}"`);
 
-    const response = await this.client.messages.create({
-      model: "claude-haiku-5-5",
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: userInput }],
-    });
-
-    const textBlock = response.content.find(
-      (b): b is Anthropic.TextBlock => b.type === "text"
-    );
-    const aiResponse = textBlock?.text ?? "";
+    let aiResponse: string;
+    try {
+      const response = await this.client.chat.completions.create({
+        model: "qwen/qwen3.8-27b",
+        max_tokens: 1024,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userInput },
+        ],
+      });
+      aiResponse = response.choices?.[0]?.message?.content ?? "";
+    } catch (apiErr: any) {
+      decision.action = "error";
+      decision.result = `AI API error: ${apiErr.status ?? ""} ${apiErr.message}`;
+      decision.policyLog.push(`[error] API call failed: ${apiErr.message}`);
+      this.reasoningLog.push(decision);
+      return decision;
+    }
     decision.policyLog.push(`[ai] Parsed response: ${aiResponse}`);
 
     let parsed: any;
@@ -94,10 +104,15 @@ export class WalletAgent {
     }
 
     if (parsed.action === "send") {
+      let amount = parsed.amount;
+      if (amount >= 1_000_000) {
+        decision.policyLog.push(`[normalize] LLM returned ${amount} uqor, converting to ${amount / 1_000_000} QOR`);
+        amount = amount / 1_000_000;
+      }
       const intent: TransactionIntent = {
         action: "send",
         to: parsed.to,
-        amount: parsed.amount,
+        amount,
         denom: parsed.denom || "uqor",
       };
       decision.intent = intent;

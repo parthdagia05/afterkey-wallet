@@ -2,12 +2,12 @@
 
 ## how ai is used in afterkey
 
-afterkey uses claude (anthropic's api) as the brain of the wallet. instead of clicking buttons or building raw transactions, you just type what you want in plain english.
+afterkey uses an llm (llama 3.3 70b via groq) as the brain of the wallet. instead of clicking buttons or building raw transactions, you just type what you want in plain english.
 
 ## the ai agent flow
 
 1. user types something like "send 2 qor to qor1abc..."
-2. claude parses the intent into a structured transaction: action, recipient, amount
+2. the llm parses the intent into a structured transaction: action, recipient, amount
 3. the policy engine checks the transaction against safety rules (spend limits, allowed addresses, rate limits)
 4. if approved, the wallet hybrid-signs with both classical (secp256k1) and post-quantum (ml-dsa-87) keys
 5. the transaction is broadcast to qorechain testnet
@@ -26,12 +26,13 @@ this means you can audit every action the wallet took and understand why.
 
 ## ai tools used
 
-- claude haiku 5.5 via anthropic api for intent parsing
+- llama 3.3 70b via groq api for intent parsing (free tier, no cost)
 - claude code for development assistance during the hackathon
 
 ## model choice
 
-we use claude haiku 5.5 for the wallet agent because:
-- its fast (wallet interactions should feel instant)
-- its cheap (no point using a frontier model for parsing "send 5 qor to alice")
-- its accurate enough for structured intent extraction
+we use llama 3.3 70b on groq for the wallet agent because:
+- groq is insanely fast (wallet interactions feel instant)
+- its free (groq has a generous free tier)
+- llama 3.3 70b is accurate enough for structured intent extraction
+- the real security comes from the policy engine layer, not the llm
