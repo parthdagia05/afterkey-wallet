@@ -42,6 +42,24 @@ type things like:
 - "log" to see reasoning history
 - "quit" to exit and save the log
 
+### web dashboard
+
+live at https://afterkey.mrsmoreapp.workers.dev
+
+the web app lives in `web/`. its a nextjs command center with the ai assistant, a live security ring showing the three layers, transactions history and a contact book. sends go through the same policy engine, then you get a preview and have to click approve before anything gets signed. signing is real hybrid secp256k1 + ml-dsa-87 and you get the tx hash back.
+
+```bash
+cd web
+npm install
+cp .dev.vars.example .dev.vars   # add GROQ_API_KEY and MAIN_MNEMONIC
+npm run dev                      # local
+npx opennextjs-cloudflare build && npx wrangler deploy   # cloudflare
+```
+
+secrets on cloudflare go in with `npx wrangler secret put GROQ_API_KEY` and `npx wrangler secret put MAIN_MNEMONIC`. history and contacts are stored in cloudflare kv.
+
+policy rules in the web app (7 total): max per tx, daily limit, allowlist, cooldown, velocity (max 3 sends per 5 min), anomaly (warns if > 3x your average send), new recipient (warns).
+
 ### drill scripts
 ```bash
 npm run setup-drill    # generate a fresh drill account
